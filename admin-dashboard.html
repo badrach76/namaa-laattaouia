@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم والإدارة - جمعية نماء العطاوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- مكتبة Supabase للربط بقاعدة البيانات -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>if (sessionStorage.getItem('isAdmin') !== 'true') { alert('غير مسموح بالدخول.'); window.location.href = 'admin-login.html'; }</script>
+</head>
+<body>
+    <header>
+    <div class="navbar">
+        <div class="logo-area">
+            <img src="1000096843.jpg" alt="شعار جمعية نماء" class="logo-img">
+            <div class="logo-text">
+                <h1>جمعية نماء العطاوية</h1>
+                <span>لأصحاب وحدات إنتاج زيت الزيتون</span>
+            </div>
+        </div>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i><span>القائمة</span></button>
+            <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            
+            <!-- قائمة المستجدات المنسدلة -->
+            <li>
+                <a><i class="fa-solid fa-newspaper"></i> المستجدات <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="news.html"><i class="fa-solid fa-globe"></i> أخبار القطاع</a>
+                    <a href="activities.html"><i class="fa-solid fa-calendar-days"></i> أنشطة الجمعية</a>
+                </div>
+            </li>
+
+            <!-- قائمة المهنية المنسدلة -->
+            <li>
+                <a><i class="fa-solid fa-briefcase"></i> المهنية <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="services.html"><i class="fa-solid fa-handshake-angle"></i> خدمات المعاصر</a>
+                    <a href="training.html"><i class="fa-solid fa-graduation-cap"></i> التكوين والتأطير</a>
+                </div>
+            </li>
+
+            <!-- قائمة الإدارة المنسدلة -->
+            <li>
+                <a><i class="fa-solid fa-user-gear"></i> الإدارة <i class="fa-solid fa-angle-down" style="font-size:0.6rem;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="admin-login.html"><i class="fa-solid fa-lock"></i> تسجيل دخول المشرف</a>
+                    <a href="admin-dashboard.html"><i class="fa-solid fa-gauge-high"></i> لوحة الإدارة</a>
+                </div>
+            </li>
+
+            <li><a href="membership.html"><i class="fa-solid fa-user-plus"></i> الانخراط</a></li>
+            <li><a href="register.html" class="admin-nav-btn"><i class="fa-solid fa-user-shield"></i> فضاء المنخرط</a></li>
+        </ul>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="section-title">
+            <h3>إدارة المنصة وقاعدة البيانات (Supabase)</h3>
+            <p>إدارة المنخرطين والأنشطة والتكوينات والأخبار والوسائط من مكان واحد</p>
+        </div>
+
+        <!-- إرسال إشعار جماعي لمجموعة الواتساب -->
+        <div class="admin-action-box" style="border-top-color: #25d366;">
+            <h4 style="color: var(--primary-green); margin-bottom: 12px;"><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> إرسال رسالة جماعية لواتساب المهني</h4>
+            <form onsubmit="window.open(`https://wa.me/?text=${encodeURIComponent(document.getElementById('group-wa-msg').value)}`, '_blank'); return false;">
+                <div class="form-group"><textarea id="group-wa-msg" rows="2" required placeholder="اكتب الإشعار الجماعي لأصحاب المعاصر..."></textarea></div>
+                <button type="submit" class="submit-btn" style="background-color: #25d366; width: auto; padding: 8px 20px;"><i class="fa-brands fa-whatsapp"></i> إرسال للمجموعة</button>
+            </form>
+        </div>
+<!-- قسم تدبير الأسعار المحلية في لوحة المشرف -->
+<div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 4px solid var(--accent-gold);">
+    <h3 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> إضافة وتدبير الأسعار المحلية في العارضة</h3>
+    <form onsubmit="handleAddLocalPrice(event)" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" id="local-price-input" required placeholder="مثال: السوق المحلية (العطاوية): 75 - 80 درهم / لتر" style="flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+        <button type="submit" style="background: var(--primary-green); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">إضافة للعارضة</button>
+    </form>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: right;">
+            <thead>
+                <tr style="background: #f4ecdf; color: var(--primary-green);">
+                    <th style="padding: 10px;">نص السعر / المؤشر المحلي الحالي</th>
+                    <th style="padding: 10px; width: 100px;">إجراء</th>
+                </tr>
+            </thead>
+            <tbody id="admin-local-prices-table">
+                <!-- يتم تعبئتها تلقائياً عبر الجافاسكريبت -->
+            </tbody>
+        </table>
+    </div>
+</div>
+        <!-- إضافة منخرط قديم -->
+        <div class="admin-action-box">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-user-plus"></i> تسجيل منخرط قديم مباشرة</h4>
+            <form onsubmit="handleAddOldMember(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end;">
+                <div class="form-group" style="margin:0;"><label>الاسم الكامل:</label><input type="text" id="old-name" required placeholder="اسم المسؤول"></div>
+                <div class="form-group" style="margin:0;"><label>المعصرة:</label><input type="text" id="old-mill" required placeholder="اسم المعصرة"></div>
+                <div class="form-group" style="margin:0;"><label>الهاتف:</label><input type="tel" id="old-phone" required placeholder="06XXXXXXXX"></div>
+                <div class="form-group" style="margin:0;"><label>النوع:</label><select id="old-type"><option value="عصرية">عصرية</option><option value="تقليدية">تقليدية</option></select></div>
+                <div class="form-group" style="margin:0;"><label>واجب الانخراط:</label><select id="old-fee"><option value="مؤدى">مؤدى</option><option value="غير مؤدى">غير مؤدى</option></select></div>
+                <button type="submit" class="submit-btn" style="grid-column: 1 / -1; padding: 10px;">حفظ وتفعيل المنخرط القديم</button>
+            </form>
+        </div>
+
+        <!-- جدول إدارة المنخرطين (تعديل الحالات والواجبات والحذف) -->
+        <div class="admin-action-box">
+            <h4 style="margin-bottom: 15px; color: var(--primary-green);"><i class="fa-solid fa-users-gear"></i> إدارة المنخرطين (تعديل وحذف)</h4>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: right; min-width: 750px;">
+                    <thead>
+                        <tr style="background-color: var(--primary-green); color: white;">
+                            <th style="padding: 10px;">المنخرط</th>
+                            <th style="padding: 10px;">المعصرة</th>
+                            <th style="padding: 10px;">الهاتف</th>
+                            <th style="padding: 10px;">واجب الانخراط</th>
+                            <th style="padding: 10px;">الحالة</th>
+                            <th style="padding: 10px;">الإجراء (قبول/رفض)</th>
+                            <th style="padding: 10px;">حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-members-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة الأنشطة (إضافة وحذف) -->
+        <div class="admin-action-box">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-bullhorn"></i> إدارة أنشطة الجمعية (نشر وحذف)</h4>
+            <form onsubmit="handleAddActivity(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
+                <div class="form-group" style="margin:0;"><label>العنوان:</label><input type="text" id="act-title" required placeholder="العنوان"></div>
+                <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="act-date" required></div>
+                <div class="form-group" style="margin:0;"><label>النوع:</label><select id="act-type"><option value="منجز">منجز</option><option value="مستقبلي">مستقبلي</option></select></div>
+                <div class="form-group" style="margin:0;"><label>رفع صورة من الجهاز:</label><input type="file" id="act-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="act-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رفع فيديو من الجهاز:</label><input type="file" id="act-video-file" accept="video/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط فيديو/YouTube:</label><input type="url" id="act-video-url" placeholder="رابط الفيديو"></div>
+                <div class="form-group" style="margin:0; grid-column: 1/-1;"><label>التفاصيل:</label><textarea id="act-desc" rows="2" required placeholder="التفاصيل..."></textarea></div>
+                <button type="submit" class="submit-btn" style="grid-column: 1/-1; padding: 10px;">نشر النشاط</button>
+            </form>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: right;">
+                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">النوع</th><th style="padding:8px;">الوسائط</th><th style="padding:8px;">حذف</th></tr></thead>
+                    <tbody id="admin-activities-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة التكوينات (إضافة وحذف) -->
+        <div class="admin-action-box" style="border-top-color: var(--accent-gold);">
+            <h4 style="color: var(--primary-green); margin-bottom: 15px;"><i class="fa-solid fa-graduation-cap"></i> إدارة التكوينات (نشر وحذف)</h4>
+            <form onsubmit="handleAddTraining(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; align-items: end;">
+                <div class="form-group" style="margin:0;"><label>عنوان التكوين:</label><input type="text" id="tr-title" required placeholder="العنوان"></div>
+                <div class="form-group" style="margin:0;"><label>التاريخ:</label><input type="date" id="tr-date" required></div>
+                <div class="form-group" style="margin:0;"><label>المؤطر:</label><input type="text" id="tr-trainer" required placeholder="المؤطر"></div>
+                <div class="form-group" style="margin:0;"><label>الفئة:</label><input type="text" id="tr-target" required placeholder="الفئة المستهدفة"></div>
+                <div class="form-group" style="margin:0;"><label>رفع صورة من الجهاز:</label><input type="file" id="tr-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="tr-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رفع فيديو من الجهاز:</label><input type="file" id="tr-video-file" accept="video/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط فيديو/YouTube:</label><input type="url" id="tr-video-url" placeholder="رابط الفيديو"></div>
+                <div class="form-group" style="margin:0; grid-column: 1/-1;"><label>المحتوى الحصري:</label><textarea id="tr-content" rows="2" required placeholder="المحتوى التقني..."></textarea></div>
+                <button type="submit" class="submit-btn" style="grid-column: 1/-1; padding: 10px; background-color: var(--accent-gold);">نشر التكوين</button>
+            </form>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: right;">
+                    <thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">المؤطر</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الوسائط</th><th style="padding:8px;">حذف</th></tr></thead>
+                    <tbody id="admin-trainings-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إدارة أخبار الجمعية والقطاع -->
+        <div class="admin-action-box" style="border-top-color:#2e7d32;">
+            <h4 style="color:var(--primary-green);margin-bottom:15px;"><i class="fa-solid fa-newspaper"></i> إدارة أخبار الجمعية والقطاع</h4>
+            <form onsubmit="handleAddNews(event)" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px;align-items:end;">
+                <div class="form-group" style="margin:0;"><label>عنوان الخبر:</label><input type="text" id="news-title" required></div>
+                <div class="form-group" style="margin:0;"><label>التصنيف:</label><select id="news-category"><option>أخبار الجمعية</option><option>قوانين وتراخيص</option><option>أخبار وطنية</option><option>أخبار دولية</option><option>الأسعار والسوق</option><option>بلاغات مهنية</option></select></div>
+                <div class="form-group" style="margin:0;"><label>تاريخ النشر:</label><input type="date" id="news-date" required></div>
+                <div class="form-group" style="margin:0;"><label>صورة الخبر:</label><input type="file" id="news-image-file" accept="image/*"></div>
+                <div class="form-group" style="margin:0;"><label>أو رابط الصورة:</label><input type="url" id="news-image-url" placeholder="https://..."></div>
+                <div class="form-group" style="margin:0;"><label>رابط وثيقة PDF (اختياري):</label><input type="url" id="news-document-url" placeholder="رابط الوثيقة"></div>
+                <div class="form-group" style="margin:0;grid-column:1/-1;"><label>مضمون الخبر:</label><textarea id="news-content" rows="4" required></textarea></div>
+                <button type="submit" class="submit-btn" style="grid-column:1/-1;padding:10px;">نشر الخبر</button>
+            </form>
+            <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;text-align:right;min-width:700px;"><thead><tr style="background:#ddd;"><th style="padding:8px;">العنوان</th><th style="padding:8px;">التصنيف</th><th style="padding:8px;">التاريخ</th><th style="padding:8px;">الوسائط والوثائق</th><th style="padding:8px;">حذف</th></tr></thead><tbody id="admin-news-table"></tbody></table></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content"><div class="footer-logo"><h2>جمعية نماء العطاوية</h2><p>العطاوية، المغرب</p></div></div>
+        <div class="footer-bottom"><p>جميع حقوق النشر محفوظة © 2026 - جمعية نماء العطاوية</p></div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
